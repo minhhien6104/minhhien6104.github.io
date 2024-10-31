@@ -1,40 +1,580 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-    <title>PDF in HTML</title>
-</head>
-<style>
-    .pdf {
-        width: 100%;
-        aspect-ratio: 4 / 3;
-    }
-
-    .pdf,
-    html,
-    body {
-        height: 100%;
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <title>
+      Chiết xuất Alakaloid từ lá đu đủ ứng dụng trong y học
+    </title>
+    <style>
+      :root {
+        --dark-green: #1a5c1a;
+        --medium-green: #2e8b57;
+        --light-green: #98fb98;
+        --dark-orange: #ff8c00;
+        --medium-orange: #ffa500;
+        --light-orange: #ffd700;
+        --off-white: #fff5e6;
+      }
+      body,
+      html {
         margin: 0;
         padding: 0;
-    }
+        font-family: Arial, sans-serif;
+        height: 100%;
+        background-color: var(--off-white);
+        color: var(--dark-green);
+        background-image: url("https://ik.imagekit.io/0ofixtqpt/v0/subtle-green-orange-pattern.png?updatedAt=1685547600000");
+        background-repeat: repeat;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .navbar {
+        background-color: var(--dark-green);
+        color: var(--light-orange);
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-image: linear-gradient(
+          45deg,
+          rgba(255, 140, 0, 0.1) 25%,
+          transparent 25%,
+          transparent 50%,
+          rgba(255, 140, 0, 0.1) 50%,
+          rgba(255, 140, 0, 0.1) 75%,
+          transparent 75%,
+          transparent
+        );
+        background-size: 50px 50px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+      .toggle-btn {
+        background: none;
+        border: none;
+        color: var(--light-orange);
+        font-size: 20px;
+        cursor: pointer;
+      }
+      .main-content {
+        display: flex;
+        flex-grow: 1;
+        overflow: hidden;
+      }
+      .sidebar {
+        background-color: var(--light-green);
+        padding: 20px;
+        transition: all 0.3s;
+        overflow-y: auto;
+        background-image: url("https://ik.imagekit.io/0ofixtqpt/v0/leaf-texture-orange.png?updatedAt=1685547600000");
+        background-repeat: repeat;
+        background-size: 100px 100px;
+        box-shadow: inset -5px 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .sidebar.collapsed {
+        width: 0;
+        padding: 0;
+      }
+      .content {
+        flex-grow: 1;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        position: relative;
+        overflow: auto;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        margin: 10px;
+      }
+      .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      .sidebar li {
+        margin-bottom: 10px;
+      }
+      .sidebar a {
+        text-decoration: none;
+        color: var(--dark-green);
+        transition: color 0.3s, background-color 0.3s;
+        background-color: rgba(255, 255, 255, 0.7);
+        padding: 5px 10px;
+        border-radius: 5px;
+        display: block;
+      }
+      .sidebar a:hover {
+        color: var(--dark-orange);
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+      .leaf {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        opacity: 0.7;
+        border-radius: 50% 0 50% 50%;
+        animation: fall 10s linear infinite;
+        pointer-events: none;
+        background-size: cover;
+      }
+      .leaf-green {
+        background-color: var(--medium-green);
+        background-image: url("https://ik.imagekit.io/0ofixtqpt/v0/leaf-vein-texture-green.png?updatedAt=1685547600000");
+      }
+      .leaf-orange {
+        background-color: var(--medium-orange);
+        background-image: url("https://ik.imagekit.io/0ofixtqpt/v0/leaf-vein-texture-orange.png?updatedAt=1685547600000");
+      }
+      @keyframes fall {
+        0% {
+          top: -20px;
+          transform: translateX(0) rotate(0deg);
+        }
+        100% {
+          top: 100%;
+          transform: translateX(100px) rotate(720deg);
+        }
+      }
+      h1,
+      h2,
+      h3 {
+        color: var(--dark-orange);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+      a {
+        color: var(--medium-green);
+      }
+      a:hover {
+        color: var(--dark-orange);
+      }
+      .content-section {
+        background-color: rgba(255, 255, 255, 0.6);
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid var(--medium-orange);
+      }
+      .search-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .search-input {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px;
+        border: 2px solid var(--medium-green);
+        border-radius: 5px;
+        font-size: 16px;
+      }
+      .search-results {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 10px;
+        display: none;
+      }
+      .search-result-item {
+        margin-bottom: 10px;
+        padding: 5px;
+        border-bottom: 1px solid var(--light-green);
+      }
+      .search-result-item:last-child {
+        border-bottom: none;
+      }
+      .highlight {
+        background-color: var(--light-orange);
+        padding: 2px;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body style="width: 100%;">
+    <div class="container width:100%">
+      <nav class="navbar">
+        <h1>Chiết xuất Alkaloid từ lá đu đủ ứng dụng trong y học</h1>
+        <button
+          class="toggle-btn"
+          onclick="toggleSidebar()"
+          aria-label="Toggle Sidebar"
+        >
+          ☰
+        </button>
+      </nav>
+      <div class="main-content">
+        <aside class="sidebar col-sm-12 col-lg-3 col-xs-3 col-md-3" id="sidebar">
+          <ul>
+            <li><a href="#poster">Poster</a></li>
+            <li><a href="#dat-van-de">Đặt vấn đề và tổng quang</a></li>
+            <li><a href="#phuong-phap">Phương pháp nghiên cứu</a></li>
+            <li><a href="#ket-qua">Kết quả</a></li>
+            <li><a href="#ban-luan">Bàn luận</a></li>
+            <li><a href="#tri-an">Lời cảm ơn</a></li>
 
-    h1,
-    h3 {
-        text-align: center;
-    }
+          </ul>
+        </aside>
+        <main class="content">
+          <div class="search-container">
+            <input
+              type="text"
+              id="search-input"
+              class="search-input"
+              placeholder="Search the wiki..."
+              aria-label="Search the wiki"
+            />
+          </div>
+          <div id="search-results" class="search-results"></div>
+          <section class="content-section">
+            <h2 id="poster">WELCOME</h2>
+            <img src="./img/poster.PNG" alt="" style="width: 100%;">
+          </section>
+          <section class="content-section">
+            <h2 id="dat-van-de">ĐẶT VẤN ĐỀ VÀ TỔNG QUAN</h2>
+            <p>
+              Cây Đu đủ (Carica papaya L.) thuộc họ Caricaceae là loại cây có
+              nhiều tác dụng tốt cho sức khoẻ. Ở nước ta, cây Đu đủ được trồng
+              khắp nơi, đây là loại cây có nhiều tác dụng tốt cho sức khoẻ. Quả
+              Đu đủ chín là món ăn bổ dưỡng, có tác dụng nhuận tràng và lợi tiểu
+              nhẹ. Ngoài ra, nhựa mủ quả xanh có tác dụng trừ giun và chống đông
+              máu. Hạt còn có thể hạ sốt. Rễ cây có tác dụng tiêu đờm và giải
+              độc.
+            </p>
+            <p>
+              Tuy nhiên phần lá ít được dùng và còn bị loại bỏ. Ở trong lá,
+              chúng ta còn có thể khai thác phần dịch chiết có hợp chất alkaloid
+              không được coi trọng trong quá trình sử dụng cây đu đủ.
+            </p>
+            <p>
+              Phương pháp siêu âm được áp dụng để chiết xuất alkaloid. Chiết
+              xuất siêu âm là một phương pháp chiết xuất bằng cách sử dụng sóng
+              siêu âm để tạo ra các cung cấp năng lượng cơ học nhẹ nhàng nhằm
+              phá vỡ cấu trúc tế bào lá và giải phóng các chất hoạt tính từ
+              nguyên liệu.
+            </p>
+            <p>
+              Qua nhiều bài nghiên cứu, phương pháp chiết xuất alkaloid ngoài sử
+              dụng sóng siêu âm ra thì ta có thể dùng phương pháp khác như lôi
+              cuốn hơi nước,...Tùy trường hợp sẽ sử dụng các phương pháp phù hợp
+              để chiết xuất
+            </p>
+            <p>
+              Việc sử dụng lá đu đủ để chiết xuất hợp chất alkaloid là điều khá
+              mới mới mẻ do nó có hoạt tính chống ung thư, chống oxy hóa, kháng
+              vi sinh vật kiểm định và có tác dụng chống viêm, điều hòa miễn
+              dịch. Lá đu đủ còn nhiều tiềm năng hơn việc chỉ dừng lại alkaloid
+              do có nhiều hợp chất khác nữa như papain, flavonoid,... đang chờ
+              được tìm hiểu và khám phá.
+            </p>
+          </section>
+          <section class="content-section">
+            <h3 id="phuong-phap">PHƯƠNG PHÁP NGHIÊN CỨU</h3>
+            <div class="row">
+              <div class="col-12">
+                <ul>
+                  <li>
+                    1. Thu thập lá đu đủ từ các nguồn uy tín tại Đồng Nai.
+                  </li>
+                  <li>
+                    2. Rửa sạch bằng nước cất tiến hành phân loại để thu được
+                    những lá đạt yêu cầu: + Kích thước + Chất lượng (không bị
+                    sâu, dập nát).
+                  </li>
+                  <li>
+                    3. Sấy ở nhiệt độ 60° C đến khi độ ẩm của lá còn 11 ≤13.
+                  </li>
+                  <li>
+                    4. Nghiền thành bột mịn và ray qua khay để thu được hạt có
+                    kích thước 0,8mm.
+                  </li>
+                  <li>
+                    5. Cho nguyên liệu vào máy siêu âm kết hợp dung môi sau
+                    trích ly ta sẽ thu hồi dung môi bằng dàn nóng.
+                  </li>
+                  <li>
+                    6. Sau khi đã tách dung môi ra khỏi hỗn hợp thì ta thu lại
+                    được dung dịch Alkaloid với nồng độ và độ tinh khiết ở mức
+                    cao nhất có thể.
+                  </li>
+                </ul>
+              </div>
+              <div class="col-12 row">
+                  <div class="col-12">
+                    <div class="card shadow-sm">
+                      <img
+                        src="./img/so-do.png"
+                        alt=""
+                      />
+                      <div class="card-body">
+                        <p class="card-text">
+                          
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="card shadow-sm">
+                      <img
+                        src="./img/be-rua-sieu-am-derui-3-lit-DR-MH30.png"
+                        alt=""
+                      />
+                      <div class="card-body">
+                        <p class="card-text">
+                          Bể rửa siêu âm Derui 3 lít DR-MH30
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="card shadow-sm">
+                      <img
+                        src="./img/may-nghien-bot-min-BMNB004.png"
+                        alt=""
+                      />
+                      <div class="card-body">
+                        <p class="card-text">
+                            Máy nghiền bột mịn BMNB004
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="card shadow-sm">
+                      <img
+                        src="./img/thiet-bi-chung-cat-thu-hoi-dung-moi.png"
+                        alt=""
+                      />
+                      <div class="card-body">
+                        <p class="card-text">
+                            Thiết bị chưng cất thu hồi dung môi
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="card shadow-sm">
+                      <img
+                        src="./img/tu-say-Memmert-UF55-53-lit.png"
+                        alt=""
+                      />
+                      <div class="card-body">
+                        <p class="card-text">
+                            Bể rửa siêu âm Derui 3 lít DR-MH30
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
-    h1 {
-        color: green;
-    }
-</style>
+                            
+              </div>
+            </div>
+          </section>
+          <section class="content-section">
+            <div class="row">
+                <div class="col-12">
 
-<body>
-    <object class="pdf" 
-            data=
-"https://minhhien6104.github.io/pptx/poster.pdf"
-            width="800"
-            height="500">
-    </object>
-</body>
+                    <h3 id="ket-qua">KẾT QUẢ</h3>
+                    <p>Dựa trên những bài nghiên cứu mà nhóm tham khảo, các yếu tố như nồng độ dung môi, tỷ lệ pha dung môi và thời gian chiết xuất ảnh hưởng đáng kể đến phương pháp chiết xuất alkaloid cho sinh khối lan thạch hộc tía. Quá trình này mang lại hàm lượng alkaloid trung bình khoảng 145mg trên 100g nguyên liệu.
+                        Đối với cây đơn lá đỏ, xử lý bằng phương pháp sóng siêu âm trong 20 phút cho kết quả hàm lượng flavonoid cao nhất là 17,55%. Ngoài ra, khi ở nhiệt độ 60C, hàm lượng flavonoid đạt mức cao nhất là 17,53%.
+                        Những bài nghiên cứu này chứng minh rằng các thông số như thời gian chiết xuất, nồng độ dung môi và tỷ lệ pha dung môi đóng vai trò quan trọng trong việc ảnh hưởng đến phương pháp chiết xuất bằng sóng siêu âm.</p>
+                </div>
+                <div class="col-12 row">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="card shadow-sm">
+                          <img
+                            src="./img/anh-huong-cua-dung-moi-den-hieu-suat-trich-ly.png"
+                            alt=""
+                          />
+                          <div class="card-body">
+                            <p class="card-text">
+                                Ảnh hưởng của nồng độ đến hiệu suất trích ly
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-md-6">
+                        <div class="card shadow-sm">
+                          <img
+                            src="./img/anh-huong-cua-nong-do-den-hieu-suat-trich-ly.png"
+                            alt=""
+                          />
+                          <div class="card-body">
+                            <p class="card-text">
+                                Ảnh hưởng của tỉ lệ nguyên liệu/dung môi đến hiệu suất trích ly
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-md-6">
+                        <div class="card shadow-sm">
+                          <img
+                            src="./img/anh-huong-cua-thoi-gian-den-hieu-suat-trich-ly.png"
+                            alt=""
+                          />
+                          <div class="card-body">
+                            <p class="card-text">
+                                Ảnh hưởng của dung môi đến hiệu suất trích ly
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-12 col-md-6">
+                        <div class="card shadow-sm">
+                          <img
+                            src="./img/anh-huong-cua-ti-le-nguyen-lieu-dung-moi-den-hieu-suat-trich-ly.png"
+                            alt=""
+                          />
+                          <div class="card-body">
+                            <p class="card-text">
+                                Ảnh hưởng của thời gian đến hiệu suất trích ly
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+            </div>
 
+          </section>
+          <section class="content-section">
+                <div class="row">
+                    <div class="col-12">
+                        <h3 id="ban-luan">BÀN LUẬN</h3>
+                        <p>Cây đu đủ không chỉ là cây ăn quả, mà lá đu đủ cũng lại tiền năng rất lớn vì có nhiều hợp chất Alkaloid có khả năng chống ung thư, oxy hóa, chống viêm,… Có thể áp dụng vào y tế hỗ trợ cộng đồng.  Một số loại thuốc đã sử dụng Akaloid là thành phần và hiện đang ở trên thị trường như:</p>
+<ul>
+<li>Vincristine(thuốc kháng tế bào ung thư)</li>
+<li>Thuốc giảm đau Opioid</li>
+<li>Thuốc Quinin(Chống sốt rét)</li>
+<li>Thuốc Caffeine</li>
+</ul>   
+<p>
+                            Ngoài ra còn có các hợp chất khác có thể ứng dụng vào được nhiều lĩnh vực khác nhau.
+                            Việc sử dụng sóng siêu âm có thể làm tăng hiệu suất chiết của lá đu đủ và giúp tiết kiệm thời gian so với những phương pháp khác. Sóng siêu âm không yêu cầu sử dụng các điều kiện khắc nghiệt hoặc hóa chất độc hại, ít gây hại tới môi trường.
+                            Phương pháp này để chiết xuất các hợp chất từ thực vật, dược liệu. Nếu có thể tiến hành trên quy mô phòng thí nghiệm để tìm được những yếu tố ảnh hưởng như: kích thước, thời gian chiết xuất, tỷ lệ dung môi và nguyên liệu, loại dung môi dựa vào đó đưa ra những cải tiến phù hợp hơn nhằm đạt được hiệu quả cao hơn và xa hơn nữa sẽ là áp dụng vào quy mô công nghiệp.</p>
+                    </div>
+                    <div class="col-12 row">
+                        <div class="col-5">
+                            <div class="card shadow-sm">
+                              <img
+                                src="./img/caffeine.png"
+                                alt=""
+                              />
+                              <div class="card-body">
+                                <p class="card-text">
+                                  Caffeine
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-5">
+                            <div class="card shadow-sm">
+                              <img
+                                src="./img/opioid.png"
+                                alt=""
+                              />
+                              <div class="card-body">
+                                <p class="card-text">
+                                  Opioid
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-5">
+                            <div class="card shadow-sm">
+                              <img
+                                src="./img/vincran.png"
+                                alt=""
+                              />
+                              <div class="card-body">
+                                <p class="card-text">
+                                  Vincran
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+          </section>
+<section class="content-section" id="tri-an" style="text-align:center">
+	<h2>Tri ân</h2>
+<p>Cảm ơn những người đã đóng góp cho cuộc thi này</p>
+<p>Nguyễn Thanh Duy – Hướng dẫn đề tài</p>
+<p>Lý Minh Hiền – Sáng tạo nội dung</p>
+<p>Trương Đình Tuyền – Thiết kế trang web</p>
+<p>Lâm Thư Huy - Sáng tạo nội dung</p>
+<p>Vũ Tiến Lâm – Xây dựng hình ảnh</p>
+<p>Nguyễn Văn Thanh Hải – Xây dựng hình ảnh</p>
+<p>Cảm ơn giảng viên.</p>
+<p>Nhóm em chân thành cảm ơn Thầy Nguyễn Thanh Duy đã tận tình hướng dẫn, động viên và hỗ trợ để em hoàn thành tốt đề tài này.</p>
+<p>Cảm ơn độc giả.</p>
+<p>Nhóm chúng mình chân thành cảm ơn mọi người đã dành thời gian đọc và quan tâm đến bài nghiên cứu của mình.</p>
+</section>  
+        </main>
+      </div>
+    </div>
+
+    <script>
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("collapsed");
+      }
+
+      function createLeaf() {
+        const leaf = document.createElement("div");
+        leaf.classList.add("leaf");
+        if (Math.random() > 0.5) {
+          leaf.classList.add("leaf-green");
+        } else {
+          leaf.classList.add("leaf-orange");
+        }
+        leaf.style.left = Math.random() * 100 + "%";
+        leaf.style.animationDuration = Math.random() * 5 + 5 + "s";
+        document.querySelector(".content").appendChild(leaf);
+
+        setTimeout(() => {
+          leaf.remove();
+        }, 10000);
+      }
+
+      setInterval(createLeaf, 500);
+
+      // Search functionality
+      const searchInput = document.getElementById("search-input");
+      const searchResults = document.getElementById("search-results");
+      const contentSections = document.querySelectorAll(".content-section");
+
+      searchInput.addEventListener("input", function () {
+        const query = this.value.toLowerCase();
+        const results = [];
+
+        if (query.length > 2) {
+          contentSections.forEach((section) => {
+            const text = section.innerText.toLowerCase();
+            const index = text.indexOf(query);
+            if (index !== -1) {
+              const start = Math.max(0, index - 20);
+              const end = Math.min(text.length, index + query.length + 20);
+              let snippet = text.substring(start, end);
+              snippet = snippet.replace(
+                new RegExp(query, "gi"),
+                (match) => `<span class="highlight">${match}</span>`
+              );
+              results.push(`<div class="search-result-item">${snippet}</div>`);
+            }
+          });
+
+          if (results.length > 0) {
+            searchResults.innerHTML = results.join("");
+            searchResults.style.display = "block";
+          } else {
+            searchResults.innerHTML =
+              '<div class="search-result-item">No results found.</div>';
+            searchResults.style.display = "block";
+          }
+        } else {
+          searchResults.style.display = "none";
+        }
+      });
+    </script>
+  </body>
 </html>
