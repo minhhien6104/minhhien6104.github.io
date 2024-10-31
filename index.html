@@ -69,7 +69,7 @@
         background-color: var(--light-green);
         padding: 20px;
         transition: all 0.3s;
-        overflow-y: auto;
+        overflow-y: hidden;
         background-image: url("https://ik.imagekit.io/0ofixtqpt/v0/leaf-texture-orange.png?updatedAt=1685547600000");
         background-repeat: repeat;
         background-size: 100px 100px;
@@ -84,7 +84,8 @@
         padding: 20px;
         background-color: rgba(255, 255, 255, 0.8);
         position: relative;
-        overflow: auto;
+        overflow-y: auto;
+overflow-x:hidden;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         border-radius: 5px;
         margin: 10px;
@@ -192,8 +193,8 @@
       }
     </style>
   </head>
-  <body style="width: 100%;">
-    <div class="container width:100%">
+  <body>
+    <div class="container">
       <nav class="navbar">
         <h1>Chiết xuất Alkaloid từ lá đu đủ ứng dụng trong y học</h1>
         <button
